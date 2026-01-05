@@ -3,7 +3,7 @@
  */
 
 import axios from 'axios'
-import type { Wallpaper, ApiResponse } from '@wallpaper-website/shared'
+import type { Wallpaper, ApiResponse } from '@wallix/shared'
 
 // 관리자 서버 클라이언트
 const adminClient = axios.create({

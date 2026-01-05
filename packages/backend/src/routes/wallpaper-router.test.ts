@@ -8,7 +8,7 @@ import * as fc from 'fast-check';
 import request from 'supertest';
 import express from 'express';
 import wallpaperRouter from './wallpaper-router';
-import { Wallpaper } from '@wallpaper-website/shared';
+import { Wallpaper } from '@wallix/shared';
 
 // 테스트용 Express 앱 설정
 const app = express();

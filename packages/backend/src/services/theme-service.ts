@@ -3,7 +3,7 @@
  * 테마 관련 비즈니스 로직을 담당합니다.
  */
 
-import { Theme } from '@wallpaper-website/shared';
+import { Theme } from '@wallix/shared';
 import { ThemeRepository } from '../repositories/theme-repository';
 import { transformThemeUrls } from '../utils/url-helper';
 

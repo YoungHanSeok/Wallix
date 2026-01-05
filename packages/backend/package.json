@@ -1,7 +1,7 @@
 {
-  "name": "@wallpaper-website/backend",
+  "name": "@wallix/backend",
   "version": "1.0.0",
-  "description": "배경화면 웹사이트 백엔드 API 서버",
+  "description": "Wallix 배경화면 웹사이트 백엔드 API 서버",
   "main": "dist/index.js",
   "scripts": {
     "dev": "nodemon src/index.ts",
@@ -14,7 +14,7 @@
     "clean": "rimraf dist"
   },
   "dependencies": {
-    "@wallpaper-website/shared": "^1.0.0",
+    "@wallix/shared": "^1.0.0",
     "express": "^4.18.2",
     "cors": "^2.8.5",
     "helmet": "^7.1.0",

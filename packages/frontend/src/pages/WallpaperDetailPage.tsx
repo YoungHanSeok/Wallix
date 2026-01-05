@@ -10,7 +10,7 @@ import { DownloadModal } from '../components/ui'
 import { SEOHead } from '../components/seo'
 import { ResponsiveBannerAd, SquareAd } from '../components/ads'
 import { wallpaperApi, userApi } from '../api'
-import type { Wallpaper } from '@wallpaper-website/shared'
+import type { Wallpaper } from '@wallix/shared'
 import './WallpaperDetailPage.css'
 
 export function WallpaperDetailPage() {

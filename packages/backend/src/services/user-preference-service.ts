@@ -3,7 +3,7 @@
  * 사용자 좋아요 관련 비즈니스 로직을 담당합니다.
  */
 
-import { UserLike, Wallpaper } from '@wallpaper-website/shared';
+import { UserLike, Wallpaper } from '@wallix/shared';
 import { UserRepository } from '../repositories/user-repository';
 import { WallpaperRepository } from '../repositories/wallpaper-repository';
 

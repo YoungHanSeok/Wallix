@@ -2,7 +2,7 @@
  * 사용자 좋아요 리포지토리
  */
 
-import { UserLike } from '@wallpaper-website/shared';
+import { UserLike } from '@wallix/shared';
 import { JsonStorage } from '../utils/json-storage';
 import { BaseRepository } from './base-repository';
 import { v4 as uuidv4 } from 'uuid';

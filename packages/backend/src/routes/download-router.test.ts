@@ -6,7 +6,7 @@
 
 import * as fc from 'fast-check';
 import { WallpaperService } from '../services/wallpaper-service';
-import { Wallpaper, Resolution } from '@wallpaper-website/shared';
+import { Wallpaper, Resolution } from '@wallix/shared';
 
 describe('다운로드 라우터 속성 테스트', () => {
   let wallpaperService: WallpaperService;

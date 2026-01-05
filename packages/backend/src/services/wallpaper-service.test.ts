@@ -5,7 +5,7 @@
 import * as fc from 'fast-check';
 import { WallpaperService } from './wallpaper-service';
 import { WallpaperRepository } from '../repositories/wallpaper-repository';
-import { Wallpaper, Resolution } from '@wallpaper-website/shared';
+import { Wallpaper, Resolution } from '@wallix/shared';
 
 // 테스트용 모의 리포지토리
 class MockWallpaperRepository extends WallpaperRepository {

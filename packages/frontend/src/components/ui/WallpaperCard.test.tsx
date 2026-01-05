@@ -9,7 +9,7 @@ import { BrowserRouter } from 'react-router-dom'
 import * as fc from 'fast-check'
 import { WallpaperCard } from './WallpaperCard'
 import { AppProvider } from '../../context'
-import type { Wallpaper } from '@wallpaper-website/shared'
+import type { Wallpaper } from '@wallix/shared'
 
 // API 모킹
 vi.mock('../../api', () => ({

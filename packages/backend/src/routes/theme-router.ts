@@ -5,7 +5,7 @@
 
 import { Router, Request, Response } from 'express';
 import { ThemeService } from '../services/theme-service';
-import { ApiResponse } from '@wallpaper-website/shared';
+import { ApiResponse } from '@wallix/shared';
 
 const router = Router();
 const themeService = new ThemeService();

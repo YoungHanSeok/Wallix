@@ -5,7 +5,7 @@
 
 import { Router, Request, Response } from 'express';
 import { WallpaperService } from '../services/wallpaper-service';
-import { ApiResponse } from '@wallpaper-website/shared';
+import { ApiResponse } from '@wallix/shared';
 import path from 'path';
 import fs from 'fs';
 

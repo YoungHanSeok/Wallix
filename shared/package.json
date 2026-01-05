@@ -1,7 +1,7 @@
 {
-  "name": "@wallpaper-website/shared",
+  "name": "@wallix/shared",
   "version": "1.0.0",
-  "description": "공통 타입 정의 및 유틸리티",
+  "description": "Wallix 공통 타입 정의 및 유틸리티",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {

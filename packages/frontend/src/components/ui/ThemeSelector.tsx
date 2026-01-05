@@ -7,7 +7,7 @@ import { useState, useEffect } from 'react'
 import './ThemeSelector.css'
 import { useAppContext } from '../../context'
 import { themeApi } from '../../api'
-import type { Theme } from '@wallpaper-website/shared'
+import type { Theme } from '@wallix/shared'
 import './ThemeSelector.css'
 
 interface ThemeSelectorProps {

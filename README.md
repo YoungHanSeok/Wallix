@@ -1,4 +1,4 @@
-# 🖼️ 배경화면 다운로드 웹사이트
+# 🖼️ Wallix - 배경화면 다운로드 웹사이트
 
 사용자가 다양한 테마의 고품질 배경화면을 검색, 미리보기, 그리고 원하는 해상도로 다운로드할 수 있는 웹 플랫폼입니다. 좋아요 기능을 통해 개인화된 경험을 제공합니다.
 
@@ -14,7 +14,7 @@
 ## 🏗️ 프로젝트 구조
 
 ```
-wallpaper-website/
+wallix/
 ├── packages/
 │   ├── frontend/              # React 프론트엔드 애플리케이션
 │   │   ├── src/
@@ -48,7 +48,7 @@ wallpaper-website/
 ```bash
 # 저장소 클론
 git clone <repository-url>
-cd wallpaper-website
+cd wallix
 
 # 자동 설정 (의존성 설치 + 초기 빌드)
 npm run setup

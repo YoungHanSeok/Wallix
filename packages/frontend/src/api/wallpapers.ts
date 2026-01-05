@@ -3,7 +3,7 @@
  */
 
 import { apiClient } from './client'
-import type { Wallpaper, SearchResult } from '@wallpaper-website/shared'
+import type { Wallpaper, SearchResult } from '@wallix/shared'
 
 export const wallpaperApi = {
   /**

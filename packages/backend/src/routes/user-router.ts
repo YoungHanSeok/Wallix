@@ -5,7 +5,7 @@
 
 import { Router, Request, Response } from 'express';
 import { UserPreferenceService } from '../services/user-preference-service';
-import { ApiResponse } from '@wallpaper-website/shared';
+import { ApiResponse } from '@wallix/shared';
 
 const router = Router();
 const userPreferenceService = new UserPreferenceService();

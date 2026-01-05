@@ -8,7 +8,7 @@ import { useNavigate, Link } from 'react-router-dom'
 import { useAppContext } from '../context'
 import { WallpaperGrid, SearchBar } from '../components/ui'
 import { userApi } from '../api'
-import type { Wallpaper } from '@wallpaper-website/shared'
+import type { Wallpaper } from '@wallix/shared'
 import './FavoritesPage.css'
 
 // 정렬 옵션 타입

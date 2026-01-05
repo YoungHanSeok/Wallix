@@ -7,7 +7,7 @@ module.exports = {
   apps: [
     {
       // 메인 백엔드 API 서버
-      name: 'wallpaper-backend',
+      name: 'wallix-backend',
       script: './packages/backend/dist/index.js',
       cwd: './',
       instances: 'max', // CPU 코어 수만큼 인스턴스 생성
@@ -43,7 +43,7 @@ module.exports = {
     
     // 관리자 서버 (선택사항)
     {
-      name: 'wallpaper-admin',
+      name: 'wallix-admin',
       script: './packages/backend/admin-server.js',
       cwd: './',
       instances: 1,

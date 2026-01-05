@@ -19,7 +19,7 @@ import { ResponsiveBannerAd, SquareAd } from '../components/ads'
 import '../components/ads/ads.css'
 import { useErrorHandler, useScreenSize } from '../hooks'
 import { wallpaperApi, themeApi } from '../api'
-import type { Wallpaper, Theme } from '@wallpaper-website/shared'
+import type { Wallpaper, Theme } from '@wallix/shared'
 import './HomePage.css'
 
 export function HomePage() {

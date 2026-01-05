@@ -2,7 +2,7 @@
  * 테마 리포지토리
  */
 
-import { Theme } from '@wallpaper-website/shared';
+import { Theme } from '@wallix/shared';
 import { JsonStorage } from '../utils/json-storage';
 import { BaseRepository } from './base-repository';
 import { v4 as uuidv4 } from 'uuid';

@@ -6,7 +6,7 @@
 
 import * as fc from 'fast-check';
 import { UserRepository } from './user-repository';
-import { UserLike } from '@wallpaper-website/shared';
+import { UserLike } from '@wallix/shared';
 import fs from 'fs/promises';
 import path from 'path';
 

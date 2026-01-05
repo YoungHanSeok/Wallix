@@ -11,7 +11,7 @@ import wallpaperRouter from './wallpaper-router';
 import themeRouter from './theme-router';
 import userRouter from './user-router';
 import downloadRouter from './download-router';
-import { ApiResponse } from '@wallpaper-website/shared';
+import { ApiResponse } from '@wallix/shared';
 
 // 테스트용 Express 앱 설정
 const app = express();

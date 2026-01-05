@@ -9,7 +9,7 @@ import { WallpaperCard } from './WallpaperCard'
 import { WallpaperGridSkeleton } from './SkeletonLoader'
 import { LoadingSpinner } from './LoadingSpinner'
 import { useScreenSize, useSwipe, useIsTouchDevice } from '../../hooks'
-import type { Wallpaper } from '@wallpaper-website/shared'
+import type { Wallpaper } from '@wallix/shared'
 
 interface WallpaperGridProps {
   /** 표시할 배경화면 목록 */

@@ -6,7 +6,7 @@
 import { useState, useEffect } from 'react'
 import './DownloadModal.css'
 import { wallpaperApi } from '../../api'
-import type { Wallpaper, Resolution } from '@wallpaper-website/shared'
+import type { Wallpaper, Resolution } from '@wallix/shared'
 import './DownloadModal.css'
 
 interface DownloadModalProps {

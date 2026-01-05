@@ -5,7 +5,7 @@
 
 import { Router, Request, Response, NextFunction } from 'express';
 import { WallpaperService } from '../services/wallpaper-service';
-import { ApiResponse, SearchParams } from '@wallpaper-website/shared';
+import { ApiResponse, SearchParams } from '@wallix/shared';
 import { createValidationError, createNotFoundError } from '../middleware/error-handler';
 
 const router = Router();

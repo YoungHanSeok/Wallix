@@ -3,7 +3,7 @@
  */
 
 import { apiClient } from './client'
-import type { Theme } from '@wallpaper-website/shared'
+import type { Theme } from '@wallix/shared'
 
 export const themeApi = {
   /**

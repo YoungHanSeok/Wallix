@@ -6,7 +6,7 @@
 import React, { useState } from 'react'
 import './WallpaperCard.css'
 import { useNavigate } from 'react-router-dom'
-import type { Wallpaper } from '@wallpaper-website/shared'
+import type { Wallpaper } from '@wallix/shared'
 import { useAppContext } from '../../context'
 import { userApi, deleteWallpaper } from '../../api'
 import { LazyImage } from './LazyImage'

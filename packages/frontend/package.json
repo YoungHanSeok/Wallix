@@ -1,7 +1,7 @@
 {
-  "name": "@wallpaper-website/frontend",
+  "name": "@wallix/frontend",
   "version": "1.0.0",
-  "description": "배경화면 웹사이트 프론트엔드 애플리케이션",
+  "description": "Wallix 배경화면 웹사이트 프론트엔드 애플리케이션",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -16,7 +16,7 @@
     "clean": "rimraf dist"
   },
   "dependencies": {
-    "@wallpaper-website/shared": "^1.0.0",
+    "@wallix/shared": "^1.0.0",
     "axios": "^1.6.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

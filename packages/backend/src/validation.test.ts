@@ -11,8 +11,8 @@ import {
   validateResolution, 
   validateUserLike,
   validateSearchResult 
-} from '@wallpaper-website/shared/src/utils/validation';
-import { Wallpaper, Theme, Resolution, UserLike, SearchResult } from '@wallpaper-website/shared/src/types/wallpaper';
+} from '@wallix/shared/src/utils/validation';
+import { Wallpaper, Theme, Resolution, UserLike, SearchResult } from '@wallix/shared/src/types/wallpaper';
 
 // 테스트용 생성기 (Generators)
 const resolutionArb = fc.record({

@@ -3,7 +3,7 @@
  */
 
 import React, { createContext, useContext, useReducer, ReactNode } from 'react'
-import type { Wallpaper, Theme } from '@wallpaper-website/shared'
+import type { Wallpaper, Theme } from '@wallix/shared'
 
 // 상태 타입 정의
 interface AppState {

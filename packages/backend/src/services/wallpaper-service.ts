@@ -3,7 +3,7 @@
  * 배경화면 관련 비즈니스 로직을 담당합니다.
  */
 
-import { Wallpaper, Resolution, SearchResult } from '@wallpaper-website/shared';
+import { Wallpaper, Resolution, SearchResult } from '@wallix/shared';
 import { WallpaperRepository } from '../repositories/wallpaper-repository';
 import { transformWallpaperUrls } from '../utils/url-helper';
 

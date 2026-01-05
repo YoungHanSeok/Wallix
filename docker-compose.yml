@@ -9,7 +9,7 @@ services:
     build:
       context: .
       dockerfile: packages/backend/Dockerfile
-    container_name: wallpaper-backend
+    container_name: wallix-backend
     ports:
       - "3000:3000"
     environment:
@@ -22,14 +22,14 @@ services:
     depends_on:
       - shared
     networks:
-      - wallpaper-network
+      - wallix-network
 
   # 프론트엔드 (Nginx로 정적 파일 서빙)
   frontend:
     build:
       context: .
       dockerfile: packages/frontend/Dockerfile
-    container_name: wallpaper-frontend
+    container_name: wallix-frontend
     ports:
       - "80:80"
       - "443:443"
@@ -40,22 +40,22 @@ services:
     depends_on:
       - backend
     networks:
-      - wallpaper-network
+      - wallix-network
 
   # 공유 라이브러리 빌드
   shared:
     build:
       context: .
       dockerfile: shared/Dockerfile
-    container_name: wallpaper-shared
+    container_name: wallix-shared
     volumes:
       - shared-dist:/app/shared/dist
     networks:
-      - wallpaper-network
+      - wallix-network
 
 volumes:
   shared-dist:
 
 networks:
-  wallpaper-network:
+  wallix-network:
     driver: bridge

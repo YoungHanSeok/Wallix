@@ -6,7 +6,7 @@ import * as fc from 'fast-check';
 import { UserPreferenceService } from './user-preference-service';
 import { UserRepository } from '../repositories/user-repository';
 import { WallpaperRepository } from '../repositories/wallpaper-repository';
-import { UserLike, Wallpaper } from '@wallpaper-website/shared';
+import { UserLike, Wallpaper } from '@wallix/shared';
 
 // 테스트용 모의 UserRepository
 class MockUserRepository extends UserRepository {

@@ -1,7 +1,7 @@
 {
-  "name": "wallpaper-website",
+  "name": "wallix",
   "version": "1.0.0",
-  "description": "배경화면 다운로드 웹사이트",
+  "description": "Wallix - 배경화면 다운로드 웹사이트",
   "private": true,
   "workspaces": [
     "packages/*",
