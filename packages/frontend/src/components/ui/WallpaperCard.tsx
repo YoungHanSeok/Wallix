@@ -19,9 +19,11 @@ interface WallpaperCardProps {
   onClick?: (wallpaper: Wallpaper) => void
   /** 삭제 성공 시 호출되는 콜백 (선택사항) */
   onDelete?: () => void
+  /** 수정 버튼 클릭 시 호출되는 콜백 (선택사항) */
+  onEdit?: (wallpaper: Wallpaper) => void
 }
 
-export function WallpaperCard({ wallpaper, onClick, onDelete }: WallpaperCardProps) {
+export function WallpaperCard({ wallpaper, onClick, onDelete, onEdit }: WallpaperCardProps) {
   const navigate = useNavigate()
   const { state, dispatch } = useAppContext()
   const [isLikeLoading, setIsLikeLoading] = useState(false)
@@ -68,6 +70,15 @@ export function WallpaperCard({ wallpaper, onClick, onDelete }: WallpaperCardPro
       })
     } finally {
       setIsLikeLoading(false)
+    }
+  }
+
+  // 수정 버튼 클릭 핸들러 (관리자 전용)
+  const handleEditClick = (e: React.MouseEvent) => {
+    e.stopPropagation() // 카드 클릭 이벤트 전파 방지
+    
+    if (onEdit) {
+      onEdit(wallpaper)
     }
   }
 
@@ -168,20 +179,32 @@ export function WallpaperCard({ wallpaper, onClick, onDelete }: WallpaperCardPro
           )}
         </button>
 
-        {/* 삭제 버튼 (관리자 전용) */}
+        {/* 관리자 버튼들 */}
         {state.isAdmin && (
-          <button
-            className="wallpaper-card__delete-button"
-            onClick={handleDeleteClick}
-            disabled={isDeleteLoading}
-            aria-label="배경화면 삭제"
-          >
-            {isDeleteLoading ? (
-              <span className="loading-spinner">⟳</span>
-            ) : (
-              <span className="delete-icon">🗑️</span>
-            )}
-          </button>
+          <div className="wallpaper-card__admin-buttons">
+            {/* 수정 버튼 */}
+            <button
+              className="wallpaper-card__edit-button"
+              onClick={handleEditClick}
+              aria-label="배경화면 수정"
+            >
+              <span className="edit-icon">✏️</span>
+            </button>
+
+            {/* 삭제 버튼 */}
+            <button
+              className="wallpaper-card__delete-button"
+              onClick={handleDeleteClick}
+              disabled={isDeleteLoading}
+              aria-label="배경화면 삭제"
+            >
+              {isDeleteLoading ? (
+                <span className="loading-spinner">⟳</span>
+              ) : (
+                <span className="delete-icon">🗑️</span>
+              )}
+            </button>
+          </div>
         )}
       </div>
 

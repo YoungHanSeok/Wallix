@@ -80,17 +80,23 @@
   background: rgba(255, 107, 107, 1);
 }
 
-/* 삭제 버튼 (관리자 전용) */
-.wallpaper-card__delete-button {
+/* 관리자 버튼들 */
+.wallpaper-card__admin-buttons {
   position: absolute;
   top: 12px;
   left: 12px;
+  display: flex;
+  gap: 8px;
+  z-index: 2;
+}
+
+.wallpaper-card__edit-button,
+.wallpaper-card__delete-button {
   width: 40px;
   height: 40px;
   border: none;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.9);
-  color: #dc3545;
   font-size: 16px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -98,7 +104,20 @@
   align-items: center;
   justify-content: center;
   backdrop-filter: blur(4px);
-  z-index: 2;
+}
+
+.wallpaper-card__edit-button {
+  color: #007bff;
+}
+
+.wallpaper-card__edit-button:hover {
+  background: rgba(0, 123, 255, 0.9);
+  color: white;
+  transform: scale(1.1);
+}
+
+.wallpaper-card__delete-button {
+  color: #dc3545;
 }
 
 .wallpaper-card__delete-button:hover {
@@ -116,7 +135,8 @@
   animation: spin 1s linear infinite;
 }
 
-.wallpaper-card__delete-button .delete-icon {
+.wallpaper-card__delete-button .delete-icon,
+.wallpaper-card__edit-button .edit-icon {
   font-size: 14px;
 }
 
@@ -217,11 +237,16 @@
     right: 8px;
   }
   
+  .wallpaper-card__admin-buttons {
+    top: 8px;
+    left: 8px;
+    gap: 6px;
+  }
+  
+  .wallpaper-card__edit-button,
   .wallpaper-card__delete-button {
     width: 36px;
     height: 36px;
-    top: 8px;
-    left: 8px;
   }
   
   .heart-icon {
@@ -257,12 +282,16 @@
     right: 8px;
   }
   
+  .wallpaper-card__admin-buttons {
+    top: 8px;
+    left: 8px;
+  }
+  
+  .wallpaper-card__edit-button,
   .wallpaper-card__delete-button {
     /* 터치 디바이스에서 더 큰 터치 영역 */
     width: 44px;
     height: 44px;
-    top: 8px;
-    left: 8px;
   }
 }
 

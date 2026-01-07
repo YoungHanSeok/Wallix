@@ -24,6 +24,8 @@ interface WallpaperGridProps {
   onWallpaperClick?: (wallpaper: Wallpaper) => void
   /** 배경화면 삭제 시 호출되는 콜백 */
   onWallpaperDelete?: () => void
+  /** 배경화면 수정 시 호출되는 콜백 */
+  onWallpaperEdit?: (wallpaper: Wallpaper) => void
   /** 그리드 레이아웃 타입 */
   layout?: 'masonry' | 'grid'
   /** 페이지네이션 모드 (무한 스크롤 vs 페이지네이션) */
@@ -45,6 +47,7 @@ export function WallpaperGrid({
   onLoadMore,
   onWallpaperClick,
   onWallpaperDelete,
+  onWallpaperEdit,
   layout = 'grid',
   paginationMode = 'infinite',
   currentPage = 1,
@@ -219,6 +222,7 @@ export function WallpaperGrid({
             wallpaper={wallpaper}
             onClick={onWallpaperClick}
             onDelete={onWallpaperDelete}
+            onEdit={onWallpaperEdit}
           />
         ))}
         

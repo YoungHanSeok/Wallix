@@ -1,6 +1,6 @@
-/* 배경화면 업로드 스타일 */
+/* 배경화면 수정 스타일 */
 
-.wallpaper-upload-overlay {
+.wallpaper-edit-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -14,19 +14,19 @@
   overflow-y: auto;
 }
 
-.wallpaper-upload-modal {
+.wallpaper-edit-modal {
   background: white;
   border-radius: 12px;
   padding: 2rem;
   width: 90%;
-  max-width: 600px;
+  max-width: 700px;
   max-height: 90vh;
   overflow-y: auto;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
   margin: 2rem 0;
 }
 
-.upload-header {
+.edit-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -35,7 +35,7 @@
   border-bottom: 1px solid #e1e5e9;
 }
 
-.upload-header h2 {
+.edit-header h2 {
   margin: 0;
   color: #333;
   font-size: 1.5rem;
@@ -56,12 +56,61 @@
   background-color: #f0f0f0;
 }
 
-.upload-form {
+.edit-form {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
 }
 
+/* 현재 이미지 섹션 */
+.current-image-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.current-image-section label {
+  font-weight: 600;
+  color: #333;
+  font-size: 0.9rem;
+}
+
+.current-image-preview {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e1e5e9;
+}
+
+.current-image {
+  width: 120px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+}
+
+.current-image-info {
+  flex: 1;
+}
+
+.image-title {
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 0.25rem 0;
+  font-size: 1rem;
+}
+
+.image-resolution {
+  color: #666;
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+/* 폼 그룹 */
 .form-group {
   display: flex;
   flex-direction: column;
@@ -117,6 +166,7 @@
   border-radius: 8px;
   overflow: hidden;
   max-width: 300px;
+  position: relative;
 }
 
 .file-preview img {
@@ -125,85 +175,29 @@
   display: block;
 }
 
-.form-group textarea {
-  resize: vertical;
-  min-height: 80px;
-}
-
-.error-message {
-  background-color: #f8d7da;
-  color: #721c24;
-  padding: 0.75rem;
-  border-radius: 6px;
-  border: 1px solid #f5c6cb;
-  font-size: 0.9rem;
-}
-
-.form-actions {
-  display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
-  padding-top: 1rem;
-  border-top: 1px solid #e1e5e9;
-}
-
-.cancel-button,
-.upload-button {
-  flex: 1;
-  padding: 0.75rem 1.5rem;
+.remove-image-button {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: rgba(220, 38, 38, 0.9);
+  color: white;
   border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: background-color 0.2s;
 }
 
-.cancel-button {
-  background-color: #6c757d;
-  color: white;
+.remove-image-button:hover:not(:disabled) {
+  background: rgba(220, 38, 38, 1);
 }
 
-.cancel-button:hover:not(:disabled) {
-  background-color: #545b62;
-}
-
-.upload-button {
-  background-color: #28a745;
-  color: white;
-}
-
-.upload-button:hover:not(:disabled) {
-  background-color: #218838;
-}
-
-.upload-button:disabled,
-.cancel-button:disabled {
-  background-color: #6c757d;
+.remove-image-button:disabled {
+  background: rgba(108, 117, 125, 0.6);
   cursor: not-allowed;
-  opacity: 0.6;
 }
 
-/* 반응형 디자인 */
-@media (max-width: 768px) {
-  .wallpaper-upload-modal {
-    width: 95%;
-    padding: 1.5rem;
-    margin: 1rem 0;
-  }
-  
-  .upload-header h2 {
-    font-size: 1.25rem;
-  }
-  
-  .form-actions {
-    flex-direction: column;
-  }
-  
-  .file-preview {
-    max-width: 100%;
-  }
-}
 /* 해상도 선택 스타일 */
 .resolution-options {
   display: flex;
@@ -286,8 +280,91 @@
   font-size: 0.9rem;
 }
 
-/* 반응형 디자인 - 해상도 선택 */
+.form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.error-message {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 0.75rem;
+  border-radius: 6px;
+  border: 1px solid #f5c6cb;
+  font-size: 0.9rem;
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e1e5e9;
+}
+
+.cancel-button,
+.update-button {
+  flex: 1;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cancel-button {
+  background-color: #6c757d;
+  color: white;
+}
+
+.cancel-button:hover:not(:disabled) {
+  background-color: #545b62;
+}
+
+.update-button {
+  background-color: #28a745;
+  color: white;
+}
+
+.update-button:hover:not(:disabled) {
+  background-color: #218838;
+}
+
+.update-button:disabled,
+.cancel-button:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* 반응형 디자인 */
 @media (max-width: 768px) {
+  .wallpaper-edit-modal {
+    width: 95%;
+    padding: 1.5rem;
+    margin: 1rem 0;
+  }
+  
+  .edit-header h2 {
+    font-size: 1.25rem;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+  }
+  
+  .current-image-preview {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .current-image {
+    width: 200px;
+    height: 133px;
+  }
+  
   .custom-resolution-inputs {
     flex-direction: column;
     align-items: stretch;

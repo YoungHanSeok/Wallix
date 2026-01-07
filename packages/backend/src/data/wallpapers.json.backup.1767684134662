@@ -1,5 +1,44 @@
 [
   {
+    "id": "wp-001",
+    "title": "산속의 평온한 호수",
+    "description": "맑은 산속 호수의 아름다운 풍경",
+    "themeId": "nature",
+    "tags": [
+      "자연",
+      "호수",
+      "산",
+      "평온",
+      "풍경"
+    ],
+    "resolutions": [
+      {
+        "width": 1920,
+        "height": 1080,
+        "fileUrl": "/uploads/wallpapers/wp-001-1920x1080.svg",
+        "fileSize": 2048000
+      },
+      {
+        "width": 2560,
+        "height": 1440,
+        "fileUrl": "/uploads/wallpapers/wp-001-2560x1440.svg",
+        "fileSize": 3584000
+      },
+      {
+        "width": 3840,
+        "height": 2160,
+        "fileUrl": "/uploads/wallpapers/wp-001-3840x2160.svg",
+        "fileSize": 7168000
+      }
+    ],
+    "thumbnailUrl": "/uploads/thumbnails/wp-001-thumb.svg",
+    "originalUrl": "/uploads/wallpapers/wp-001-original.svg",
+    "likeCount": 1,
+    "downloadCount": 0,
+    "createdAt": "2024-01-01T00:00:00.000Z",
+    "updatedAt": "2025-12-23T06:53:45.336Z"
+  },
+  {
     "id": "wp-002",
     "title": "숲속의 아침 햇살",
     "description": "나무 사이로 스며드는 따뜻한 아침 햇살",
@@ -228,10 +267,10 @@
     ],
     "thumbnailUrl": "/uploads/thumbnails/wp-007-thumb.svg",
     "originalUrl": "/uploads/wallpapers/wp-007-original.svg",
-    "likeCount": 1,
+    "likeCount": 0,
     "downloadCount": 0,
     "createdAt": "2024-01-01T00:00:00.000Z",
-    "updatedAt": "2026-01-07T00:26:15.795Z"
+    "updatedAt": "2024-01-01T00:00:00.000Z"
   },
   {
     "id": "wp-008",
@@ -1903,6 +1942,52 @@
     "downloadCount": 0,
     "createdAt": "2024-01-01T00:00:00.000Z",
     "updatedAt": "2024-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "36443ad0-d47b-4b95-9e60-323a67fcf1ed",
+    "title": "ㅋㅌㅊ",
+    "description": "ㅋㅌㅊ",
+    "themeId": "minimal",
+    "tags": [
+      "ㅋㅌㅊ"
+    ],
+    "resolutions": [
+      {
+        "width": 1920,
+        "height": 1080,
+        "fileUrl": "http://localhost:3002/uploads/ac016d1b-1cdb-4346-9fd5-0395299e5b45.png",
+        "fileSize": 109458
+      }
+    ],
+    "thumbnailUrl": "http://localhost:3002/uploads/ac016d1b-1cdb-4346-9fd5-0395299e5b45.png",
+    "originalUrl": "http://localhost:3002/uploads/ac016d1b-1cdb-4346-9fd5-0395299e5b45.png",
+    "likeCount": 0,
+    "downloadCount": 0,
+    "createdAt": "2025-12-23T01:08:00.119Z",
+    "updatedAt": "2025-12-23T01:08:00.119Z"
+  },
+  {
+    "id": "7436a12e-313a-4069-83bc-e020deab84d9",
+    "title": "ㄹㄹㄹㄹ",
+    "description": "ㄹㄹㄹ",
+    "themeId": "nature",
+    "tags": [
+      "ㄹㄹㄹ"
+    ],
+    "resolutions": [
+      {
+        "width": 1920,
+        "height": 1080,
+        "fileUrl": "http://localhost:3002/uploads/55a1d063-905d-4d94-98a8-91a1daba5d79.png",
+        "fileSize": 5956289
+      }
+    ],
+    "thumbnailUrl": "http://localhost:3002/uploads/55a1d063-905d-4d94-98a8-91a1daba5d79.png",
+    "originalUrl": "http://localhost:3002/uploads/55a1d063-905d-4d94-98a8-91a1daba5d79.png",
+    "likeCount": 0,
+    "downloadCount": 0,
+    "createdAt": "2025-12-23T01:14:11.045Z",
+    "updatedAt": "2025-12-23T01:59:41.900Z"
   },
   {
     "id": "8fe3a10f-2831-4c74-9431-67a03d929314",

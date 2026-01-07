@@ -14,14 +14,14 @@ interface SEOHeadProps {
 }
 
 export function SEOHead({
-  title = '배경화면 다운로드 웹사이트',
+  title = '🎨 배경화면 갤러리',
   description = '고화질 배경화면을 무료로 다운로드하세요. 다양한 테마의 아름다운 바탕화면을 제공합니다.',
   keywords = '배경화면, 바탕화면, 고화질, 무료다운로드, 데스크톱, 모바일, 테마',
   image = '/og-image.jpg',
   url = window.location.href,
   type = 'website'
 }: SEOHeadProps) {
-  const fullTitle = title === '배경화면 다운로드 웹사이트' ? title : `${title} | 배경화면 다운로드`;
+  const fullTitle = title === '🎨 배경화면 갤러리' ? title : `${title} | 🎨 배경화면 갤러리`;
 
   return (
     <Helmet>
@@ -29,7 +29,7 @@ export function SEOHead({
       <title>{fullTitle}</title>
       <meta name="description" content={description} />
       <meta name="keywords" content={keywords} />
-      <meta name="author" content="배경화면 웹사이트" />
+      <meta name="author" content="🎨 배경화면 갤러리" />
       <meta name="robots" content="index, follow" />
       <link rel="canonical" href={url} />
 
@@ -39,7 +39,7 @@ export function SEOHead({
       <meta property="og:description" content={description} />
       <meta property="og:image" content={image} />
       <meta property="og:url" content={url} />
-      <meta property="og:site_name" content="배경화면 다운로드 웹사이트" />
+      <meta property="og:site_name" content="🎨 배경화면 갤러리" />
       <meta property="og:locale" content="ko_KR" />
 
       {/* Twitter 카드 태그 */}
@@ -57,7 +57,7 @@ export function SEOHead({
         {JSON.stringify({
           "@context": "https://schema.org",
           "@type": "WebSite",
-          "name": "배경화면 다운로드 웹사이트",
+          "name": "🎨 배경화면 갤러리",
           "description": description,
           "url": url,
           "potentialAction": {

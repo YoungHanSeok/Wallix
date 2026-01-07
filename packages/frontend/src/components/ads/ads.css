@@ -18,6 +18,23 @@
   box-sizing: border-box;
 }
 
+/* 광고 로딩 중일 때 */
+.adsense-container.ad-loading {
+  min-height: 50px;
+  padding: 0.5rem;
+  background: transparent;
+  border: none;
+}
+
+/* 광고 콘텐츠가 없을 때 숨김 */
+.adsense-container.ad-empty {
+  display: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  min-height: 0 !important;
+  max-height: 0 !important;
+}
+
 /* 반응형 배너 광고 래퍼 */
 .responsive-banner-wrapper {
   width: 100%;
@@ -57,6 +74,18 @@
   padding: 0.5rem;
 }
 
+/* 광고가 없을 때 상단 배너 섹션 숨김 */
+.ad-banner-top:empty,
+.ad-banner-detail-top:empty,
+.ad-banner-middle:empty,
+.wallpaper-detail-page__ad-top:has(.adsense-container.ad-empty),
+.wallpaper-detail-page__ad-bottom:has(.adsense-container.ad-empty) {
+  display: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  height: 0 !important;
+}
+
 /* 하단 배너 광고 */
 .ad-banner-bottom,
 .ad-banner-detail-bottom {
@@ -85,6 +114,15 @@
   max-width: 300px;
   margin: 0;
   padding: 0.5rem;
+}
+
+/* 사이드바 광고가 없을 때 숨김 */
+.wallpaper-ad-sidebar:has(.adsense-container.ad-empty),
+.wallpaper-ad-sidebar:empty {
+  display: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  height: 0 !important;
 }
 
 /* 반응형 디자인 */

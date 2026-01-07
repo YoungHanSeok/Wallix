@@ -14,6 +14,7 @@ import {
   NetworkError
 } from '../components/ui'
 import { AdminPanel } from '../components/admin'
+import { WallpaperEdit } from '../components/admin/WallpaperEdit'
 import { SEOHead } from '../components/seo'
 import { ResponsiveBannerAd, SquareAd } from '../components/ads'
 import '../components/ads/ads.css'
@@ -31,6 +32,10 @@ export function HomePage() {
   const [searchLoading, setSearchLoading] = useState(false)
   const { error, isRetrying, handleError, clearError, retry } = useErrorHandler()
   const screenSize = useScreenSize()
+
+  // 수정 모달 상태
+  const [showEditModal, setShowEditModal] = useState(false)
+  const [editingWallpaper, setEditingWallpaper] = useState<Wallpaper | null>(null)
 
   // 페이징 상태
   const [currentPage, setCurrentPage] = useState(1)
@@ -241,6 +246,62 @@ export function HomePage() {
     navigate(`/wallpaper/${wallpaper.id}`)
   }, [navigate]) // dispatch 제거
 
+  // 배경화면 수정 처리
+  const handleWallpaperEdit = useCallback((wallpaper: Wallpaper) => {
+    setEditingWallpaper(wallpaper)
+    setShowEditModal(true)
+  }, [])
+
+  // 수정 성공 처리
+  const handleEditSuccess = useCallback(async () => {
+    try {
+      // 배경화면 목록 새로고침
+      const [wallpapersData, themesData] = await Promise.all([
+        wallpaperApi.getAll(),
+        themeApi.getAll()
+      ])
+      
+      const sortedWallpapers = wallpapersData.sort((a, b) => {
+        const scoreA = (a.downloadCount || 0) + (a.likeCount || 0)
+        const scoreB = (b.downloadCount || 0) + (b.likeCount || 0)
+        return scoreB - scoreA
+      })
+
+      setWallpapers(sortedWallpapers)
+      
+      // 현재 필터 상태에 따라 필터링된 목록도 업데이트
+      const currentSearchQuery = state.searchQuery
+      const currentSelectedTheme = state.selectedTheme
+      
+      if (currentSearchQuery) {
+        const searchResult = await wallpaperApi.search(currentSearchQuery)
+        setFilteredWallpapers(searchResult.wallpapers)
+      } else if (currentSelectedTheme) {
+        const themeWallpapers = await wallpaperApi.getByTheme(currentSelectedTheme.id)
+        const sortedThemeWallpapers = themeWallpapers.sort((a, b) => {
+          const scoreA = a.downloadCount + a.likeCount
+          const scoreB = b.downloadCount + b.likeCount
+          return scoreB - scoreA
+        })
+        setFilteredWallpapers(sortedThemeWallpapers)
+      } else {
+        setFilteredWallpapers(sortedWallpapers)
+      }
+      
+      dispatch({ type: 'SET_WALLPAPERS', payload: sortedWallpapers })
+      dispatch({ type: 'SET_THEMES', payload: themesData })
+    } catch (error) {
+      console.error('배경화면 목록 새로고침 실패:', error)
+      handleError(error)
+    }
+  }, [state.searchQuery, state.selectedTheme, handleError, dispatch])
+
+  // 수정 모달 닫기
+  const handleEditClose = useCallback(() => {
+    setShowEditModal(false)
+    setEditingWallpaper(null)
+  }, [])
+
   // 오류 재시도
   const handleRetry = async () => {
     await retry(async () => {
@@ -281,7 +342,6 @@ export function HomePage() {
 
       {/* SEO 메타 태그 */}
       <SEOHead
-        title="배경화면 다운로드 웹사이트"
         description="고품질 배경화면을 무료로 다운로드하세요. 다양한 테마의 아름다운 바탕화면을 제공합니다."
         keywords="배경화면, 바탕화면, 고화질, 무료다운로드, 데스크톱, 모바일, 테마, 자연, 도시, 추상"
         type="website"
@@ -376,6 +436,7 @@ export function HomePage() {
               loading={loading}
               onWallpaperClick={handleWallpaperClick}
               onWallpaperDelete={handleWallpaperDelete}
+              onWallpaperEdit={handleWallpaperEdit}
               layout="grid"
               paginationMode="pagination"
               currentPage={currentPage}
@@ -405,6 +466,15 @@ export function HomePage() {
             ✕
           </button>
         </div>
+      )}
+
+      {/* 배경화면 수정 모달 */}
+      {showEditModal && editingWallpaper && (
+        <WallpaperEdit
+          wallpaper={editingWallpaper}
+          onClose={handleEditClose}
+          onSuccess={handleEditSuccess}
+        />
       )}
     </div>
   )

@@ -12,6 +12,18 @@ interface WallpaperUploadProps {
   onSuccess: () => void
 }
 
+interface Resolution {
+  width: number
+  height: number
+}
+
+const PRESET_RESOLUTIONS = [
+  { name: 'HD', width: 1280, height: 720 },
+  { name: 'FHD', width: 1920, height: 1080 },
+  { name: '2K', width: 2560, height: 1440 },
+  { name: '4K', width: 3840, height: 2160 }
+]
+
 export function WallpaperUpload({ onClose, onSuccess }: WallpaperUploadProps) {
   const { state } = useAppContext()
   const [formData, setFormData] = useState({
@@ -24,6 +36,10 @@ export function WallpaperUpload({ onClose, onSuccess }: WallpaperUploadProps) {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  
+  // 해상도 관련 상태
+  const [selectedResolution, setSelectedResolution] = useState<string>('FHD')
+  const [customResolution, setCustomResolution] = useState({ width: '', height: '' })
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target
@@ -60,6 +76,29 @@ export function WallpaperUpload({ onClose, onSuccess }: WallpaperUploadProps) {
     }
   }
 
+  const handleResolutionChange = (resolutionName: string) => {
+    setSelectedResolution(resolutionName)
+    // 직접입력이 아닌 경우 커스텀 해상도 초기화
+    if (resolutionName !== 'custom') {
+      setCustomResolution({ width: '', height: '' })
+    }
+  }
+
+  const getSelectedResolutionData = (): Resolution[] => {
+    if (selectedResolution === 'custom') {
+      const width = parseInt(customResolution.width)
+      const height = parseInt(customResolution.height)
+      
+      if (width && height && width > 0 && height > 0) {
+        return [{ width, height }]
+      }
+      return []
+    }
+    
+    const preset = PRESET_RESOLUTIONS.find(p => p.name === selectedResolution)
+    return preset ? [{ width: preset.width, height: preset.height }] : []
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
@@ -70,6 +109,24 @@ export function WallpaperUpload({ onClose, onSuccess }: WallpaperUploadProps) {
 
     if (!formData.title.trim()) {
       setError('제목을 입력해주세요')
+      return
+    }
+
+    if (selectedResolution === 'custom') {
+      const width = parseInt(customResolution.width)
+      const height = parseInt(customResolution.height)
+      
+      if (!width || !height || width <= 0 || height <= 0) {
+        setError('올바른 해상도를 입력해주세요')
+        return
+      }
+      
+      if (width > 7680 || height > 4320) {
+        setError('해상도는 8K(7680x4320) 이하여야 합니다')
+        return
+      }
+    } else if (!selectedResolution) {
+      setError('해상도를 선택해주세요')
       return
     }
 
@@ -87,6 +144,10 @@ export function WallpaperUpload({ onClose, onSuccess }: WallpaperUploadProps) {
       uploadFormData.append('title', formData.title.trim())
       uploadFormData.append('description', formData.description.trim())
       uploadFormData.append('theme', formData.theme)
+      
+      // 해상도 데이터 추가
+      const resolutionData = getSelectedResolutionData()
+      uploadFormData.append('resolutions', JSON.stringify(resolutionData))
       
       // 태그 처리
       const tags = formData.tags
@@ -201,6 +262,82 @@ export function WallpaperUpload({ onClose, onSuccess }: WallpaperUploadProps) {
               <option value="minimal">미니멀</option>
               <option value="dark">다크</option>
             </select>
+          </div>
+
+          {/* 해상도 선택 */}
+          <div className="form-group">
+            <label>해상도 선택 *</label>
+            <div className="resolution-options">
+              {PRESET_RESOLUTIONS.map((preset) => (
+                <label key={preset.name} className="resolution-radio">
+                  <input
+                    type="radio"
+                    name="resolution"
+                    value={preset.name}
+                    checked={selectedResolution === preset.name}
+                    onChange={(e) => handleResolutionChange(e.target.value)}
+                    disabled={isLoading}
+                  />
+                  <span className="resolution-label">
+                    {preset.name} ({preset.width}×{preset.height})
+                  </span>
+                </label>
+              ))}
+              
+              {/* 직접입력 옵션 */}
+              <label className="resolution-radio">
+                <input
+                  type="radio"
+                  name="resolution"
+                  value="custom"
+                  checked={selectedResolution === 'custom'}
+                  onChange={(e) => handleResolutionChange(e.target.value)}
+                  disabled={isLoading}
+                />
+                <span className="resolution-label">직접입력</span>
+              </label>
+            </div>
+            
+            {/* 커스텀 해상도 입력 */}
+            {selectedResolution === 'custom' && (
+              <div className="custom-resolution-inputs">
+                <input
+                  type="number"
+                  placeholder="너비"
+                  value={customResolution.width}
+                  onChange={(e) => setCustomResolution(prev => ({ ...prev, width: e.target.value }))}
+                  disabled={isLoading}
+                  min="1"
+                  max="7680"
+                />
+                <span>×</span>
+                <input
+                  type="number"
+                  placeholder="높이"
+                  value={customResolution.height}
+                  onChange={(e) => setCustomResolution(prev => ({ ...prev, height: e.target.value }))}
+                  disabled={isLoading}
+                  min="1"
+                  max="4320"
+                />
+              </div>
+            )}
+
+            {/* 선택된 해상도 표시 */}
+            <div className="selected-resolution-display">
+              <span className="selected-label">선택된 해상도:</span>
+              <span className="selected-resolution">
+                {selectedResolution === 'custom' 
+                  ? (customResolution.width && customResolution.height 
+                      ? `${customResolution.width}×${customResolution.height}` 
+                      : '직접입력 (미완성)')
+                  : (() => {
+                      const preset = PRESET_RESOLUTIONS.find(p => p.name === selectedResolution)
+                      return preset ? `${preset.name} (${preset.width}×${preset.height})` : selectedResolution
+                    })()
+                }
+              </span>
+            </div>
           </div>
 
           {error && (

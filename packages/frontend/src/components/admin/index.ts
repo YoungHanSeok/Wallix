@@ -5,3 +5,4 @@
 export { AdminPanel } from './AdminPanel'
 export { AdminLogin } from './AdminLogin'
 export { WallpaperUpload } from './WallpaperUpload'
+export { WallpaperEdit } from './WallpaperEdit'

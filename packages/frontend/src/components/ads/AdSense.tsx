@@ -20,77 +20,97 @@ declare global {
   }
 }
 
-export function AdSense({
+/**
+ * 콜백 기능이 있는 AdSense 컴포넌트
+ */
+function AdSenseWithCallback({
   adSlot,
   adFormat = 'auto',
   adLayout,
   adLayoutKey,
   style = { display: 'block' },
-  className = ''
-}: AdSenseProps) {
+  className = '',
+  onEmpty
+}: AdSenseProps & { onEmpty?: () => void }) {
   const adRef = useRef<HTMLModElement>(null);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [hasContent, setHasContent] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // 컴포넌트가 마운트되고 DOM이 준비된 후 광고 로드
     const loadAd = () => {
       if (typeof window === 'undefined' || !adRef.current || isLoaded) {
         return;
       }
 
-      // 컨테이너의 너비가 0이 아닌지 확인
       const container = containerRef.current;
       if (container && container.offsetWidth === 0) {
-        // 너비가 0이면 잠시 후 다시 시도 (최대 10번)
         const retryCount = (container as any).retryCount || 0;
         if (retryCount < 10) {
           (container as any).retryCount = retryCount + 1;
           setTimeout(loadAd, 200);
         } else {
           console.warn('AdSense: 컨테이너 너비를 확인할 수 없어 광고 로드를 건너뜁니다.');
+          onEmpty?.();
         }
         return;
       }
 
-      // 이미 광고가 로드된 요소인지 확인
       const insElement = adRef.current;
       if (insElement.getAttribute('data-adsbygoogle-status')) {
-        console.warn('AdSense: 이미 광고가 로드된 요소입니다.');
         return;
       }
 
       try {
-        // 애드센스 스크립트가 로드되었는지 확인
         if (window.adsbygoogle) {
-          // 광고 푸시
           (window.adsbygoogle = window.adsbygoogle || []).push({});
           setIsLoaded(true);
+          
+          setTimeout(() => {
+            const insElement = adRef.current;
+            if (insElement && insElement.innerHTML.trim() !== '') {
+              setHasContent(true);
+            } else {
+              onEmpty?.();
+            }
+          }, 1000);
         } else {
           console.warn('AdSense: adsbygoogle 스크립트가 로드되지 않았습니다.');
+          onEmpty?.();
         }
       } catch (error) {
         console.error('AdSense 광고 로드 실패:', error);
+        onEmpty?.();
       }
     };
 
-    // DOM이 완전히 렌더링된 후 광고 로드
     const timer = setTimeout(loadAd, 300);
 
     return () => {
       clearTimeout(timer);
-      // 컴포넌트 언마운트 시 정리
       if (adRef.current) {
         const insElement = adRef.current;
-        // 광고 상태 초기화
         insElement.removeAttribute('data-adsbygoogle-status');
         insElement.innerHTML = '';
       }
     };
-  }, [adSlot, isLoaded]);
+  }, [adSlot, isLoaded, onEmpty]);
+
+  if (isLoaded && !hasContent) {
+    return null;
+  }
 
   return (
-    <div ref={containerRef} className={`adsense-container ${className}`} style={{ minHeight: '50px', minWidth: '300px', width: '100%' }}>
+    <div 
+      ref={containerRef} 
+      className={`adsense-container ${className} ${!hasContent ? 'ad-loading' : ''}`} 
+      style={{ 
+        minHeight: hasContent ? '50px' : '0px', 
+        minWidth: hasContent ? '300px' : '0px', 
+        width: '100%',
+        display: hasContent || !isLoaded ? 'flex' : 'none'
+      }}
+    >
       <ins
         ref={adRef}
         className="adsbygoogle"
@@ -106,16 +126,47 @@ export function AdSense({
   );
 }
 
+export function AdSense({
+  adSlot,
+  adFormat = 'auto',
+  adLayout,
+  adLayoutKey,
+  style = { display: 'block' },
+  className = ''
+}: AdSenseProps) {
+  return (
+    <AdSenseWithCallback
+      adSlot={adSlot}
+      adFormat={adFormat}
+      adLayout={adLayout}
+      adLayoutKey={adLayoutKey}
+      style={style}
+      className={className}
+    />
+  );
+}
+
 /**
  * 반응형 배너 광고 컴포넌트 (상단/하단용)
  */
 export function ResponsiveBannerAd({ adSlot, className }: { adSlot: string; className?: string }) {
+  const [shouldRender, setShouldRender] = useState(true);
+  
+  const handleAdEmpty = () => {
+    setShouldRender(false);
+  };
+
+  if (!shouldRender) {
+    return null;
+  }
+
   return (
     <div className={`responsive-banner-wrapper ${className || ''}`}>
-      <AdSense
+      <AdSenseWithCallback
         adSlot={adSlot}
         adFormat="auto"
         className="responsive-banner-ad"
+        onEmpty={handleAdEmpty}
         style={{ 
           display: 'block', 
           textAlign: 'center',
@@ -133,11 +184,22 @@ export function ResponsiveBannerAd({ adSlot, className }: { adSlot: string; clas
  * 사각형 광고 컴포넌트
  */
 export function SquareAd({ adSlot, className }: { adSlot: string; className?: string }) {
+  const [shouldRender, setShouldRender] = useState(true);
+  
+  const handleAdEmpty = () => {
+    setShouldRender(false);
+  };
+
+  if (!shouldRender) {
+    return null;
+  }
+
   return (
-    <AdSense
+    <AdSenseWithCallback
       adSlot={adSlot}
       adFormat="rectangle"
       className={className}
+      onEmpty={handleAdEmpty}
       style={{ display: 'inline-block', width: '300px', height: '250px' }}
     />
   );

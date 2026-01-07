@@ -10,5 +10,17 @@
     "userId": "default-user",
     "wallpaperId": "wp-001",
     "likedAt": "2025-12-23T06:53:45.333Z"
+  },
+  {
+    "id": "cfbaffd3-60b3-48aa-ad72-ee906683ae6b",
+    "userId": "default-user",
+    "wallpaperId": "ae911ba5-9996-4b06-8cc8-0788cfba157c",
+    "likedAt": "2026-01-06T07:14:10.076Z"
+  },
+  {
+    "id": "13a315c8-a1e0-4582-b199-566596c75499",
+    "userId": "default-user",
+    "wallpaperId": "wp-007",
+    "likedAt": "2026-01-07T00:26:15.789Z"
   }
 ]

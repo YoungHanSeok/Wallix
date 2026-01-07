@@ -7,7 +7,7 @@ import type { Wallpaper, ApiResponse } from '@wallix/shared'
 
 // 관리자 서버 클라이언트
 const adminClient = axios.create({
-  baseURL: 'http://localhost:3002/api',
+  baseURL: 'http://localhost:3001/api',
   timeout: 30000,
 })
 
@@ -31,6 +31,23 @@ export async function uploadWallpaper(
   formData: FormData
 ): Promise<ApiResponse<Wallpaper>> {
   const response = await adminClient.post('/admin/wallpapers', formData, {
+    headers: {
+      Authorization: `Bearer ${adminKey}`,
+      'Content-Type': 'multipart/form-data'
+    }
+  })
+  return response.data
+}
+
+/**
+ * 배경화면 수정 (관리자 전용)
+ */
+export async function updateWallpaper(
+  adminKey: string,
+  wallpaperId: string,
+  formData: FormData
+): Promise<ApiResponse<Wallpaper>> {
+  const response = await adminClient.put(`/admin/wallpapers/${wallpaperId}`, formData, {
     headers: {
       Authorization: `Bearer ${adminKey}`,
       'Content-Type': 'multipart/form-data'

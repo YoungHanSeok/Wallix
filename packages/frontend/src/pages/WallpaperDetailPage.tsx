@@ -9,16 +9,19 @@ import { useAppContext } from '../context'
 import { DownloadModal } from '../components/ui'
 import { SEOHead } from '../components/seo'
 import { ResponsiveBannerAd, SquareAd } from '../components/ads'
-import { wallpaperApi, userApi } from '../api'
-import type { Wallpaper } from '@wallix/shared'
+import { useScreenSize } from '../hooks'
+import { wallpaperApi, userApi, themeApi } from '../api'
+import type { Wallpaper, Theme } from '@wallix/shared'
 import './WallpaperDetailPage.css'
 
 export function WallpaperDetailPage() {
   const { wallpaperId } = useParams<{ wallpaperId: string }>()
 
   const { state, dispatch } = useAppContext()
+  const screenSize = useScreenSize()
   
   const [wallpaper, setWallpaper] = useState<Wallpaper | null>(null)
+  const [theme, setTheme] = useState<Theme | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [isLiked, setIsLiked] = useState(false)
@@ -42,6 +45,15 @@ export function WallpaperDetailPage() {
       try {
         const wallpaperData = await wallpaperApi.getById(wallpaperId)
         setWallpaper(wallpaperData)
+        
+        // 테마 데이터도 로드
+        try {
+          const themeData = await themeApi.getById(wallpaperData.themeId)
+          setTheme(themeData)
+        } catch (themeError) {
+          console.error('테마 데이터 로드 실패:', themeError)
+          // 테마 로드 실패해도 배경화면은 표시
+        }
         
         // 전역 상태 업데이트
         dispatch({ type: 'SET_SELECTED_WALLPAPER', payload: wallpaperData })
@@ -203,7 +215,7 @@ export function WallpaperDetailPage() {
         </Link>
         <span className="breadcrumb-separator">›</span>
         <Link to={`/theme/${wallpaper.themeId}`} className="breadcrumb-link">
-          테마
+          {theme?.name || '테마'}
         </Link>
         <span className="breadcrumb-separator">›</span>
         <span className="breadcrumb-current">{wallpaper.title}</span>
@@ -271,23 +283,38 @@ export function WallpaperDetailPage() {
               <div className="wallpaper-stats">
                 <div className="stat-item">
                   <span className="stat-icon">❤️</span>
-                  <span className="stat-value">{wallpaper.likeCount.toLocaleString()}</span>
-                  <span className="stat-label">좋아요</span>
+                  <div className="stat-content">
+                    <span className="stat-value">{wallpaper.likeCount.toLocaleString()}</span>
+                    <span className="stat-label">좋아요</span>
+                  </div>
                 </div>
                 <div className="stat-item">
                   <span className="stat-icon">⬇️</span>
-                  <span className="stat-value">{wallpaper.downloadCount.toLocaleString()}</span>
-                  <span className="stat-label">다운로드</span>
+                  <div className="stat-content">
+                    <span className="stat-value">{wallpaper.downloadCount.toLocaleString()}</span>
+                    <span className="stat-label">다운로드</span>
+                  </div>
                 </div>
                 <div className="stat-item">
                   <span className="stat-icon">📅</span>
-                  <span className="stat-value">
-                    {(() => {
-                      const date = new Date(wallpaper.createdAt);
-                      return `${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getDate().toString().padStart(2, '0')}`;
-                    })()}
-                  </span>
-                  <span className="stat-label">등록일</span>
+                  <div className="stat-content">
+                    <span className="stat-value">
+                      {(() => {
+                        const date = new Date(wallpaper.createdAt);
+                        const year = date.getFullYear();
+                        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+                        const day = date.getDate().toString().padStart(2, '0');
+                        
+                        // 화면 크기에 따라 다른 형식 사용
+                        if (screenSize === 'mobile') {
+                          return `${year.toString().slice(-2)}.${month}.${day}`;
+                        } else {
+                          return `${year}.${month}.${day}`;
+                        }
+                      })()}
+                    </span>
+                    <span className="stat-label">등록일</span>
+                  </div>
                 </div>
               </div>
 
@@ -303,16 +330,33 @@ export function WallpaperDetailPage() {
               <div className="wallpaper-resolutions">
                 <h3 className="resolutions-title">사용 가능한 해상도</h3>
                 <div className="resolutions-list">
-                  {wallpaper.resolutions.map((resolution, index) => (
-                    <div key={index} className="resolution-item">
-                      <span className="resolution-size">
-                        {resolution.width} × {resolution.height}
-                      </span>
-                      <span className="resolution-filesize">
-                        ({(resolution.fileSize / 1024 / 1024).toFixed(1)}MB)
-                      </span>
-                    </div>
-                  ))}
+                  {wallpaper.resolutions.map((resolution, index) => {
+                    // 해상도 이름 매핑
+                    const getResolutionName = (width: number, height: number) => {
+                      if (width === 1280 && height === 720) return 'HD'
+                      if (width === 1920 && height === 1080) return 'FHD'
+                      if (width === 2560 && height === 1440) return '2K'
+                      if (width === 3840 && height === 2160) return '4K'
+                      if (width === 7680 && height === 4320) return '8K'
+                      return '커스텀'
+                    }
+
+                    const resolutionName = getResolutionName(resolution.width, resolution.height)
+                    
+                    return (
+                      <div key={index} className="resolution-item">
+                        <div className="resolution-info">
+                          <span className="resolution-name">{resolutionName}</span>
+                          <span className="resolution-size">
+                            {resolution.width} × {resolution.height}
+                          </span>
+                        </div>
+                        <span className="resolution-filesize">
+                          {(resolution.fileSize / 1024 / 1024).toFixed(1)}MB
+                        </span>
+                      </div>
+                    )
+                  })}
                 </div>
               </div>
 

@@ -7,6 +7,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAppContext } from '../context'
 import { WallpaperGrid, SearchBar } from '../components/ui'
+import { WallpaperEdit } from '../components/admin'
 import { userApi } from '../api'
 import type { Wallpaper } from '@wallix/shared'
 import './FavoritesPage.css'
@@ -36,6 +37,7 @@ export function FavoritesPage() {
   const [error, setError] = useState<string | null>(null)
   const [sortBy, setSortBy] = useState<SortOption>('recent')
   const [searchQuery, setSearchQuery] = useState('')
+  const [editingWallpaper, setEditingWallpaper] = useState<Wallpaper | null>(null)
 
 
   // 좋아요 목록 로드
@@ -135,6 +137,45 @@ export function FavoritesPage() {
     dispatch({ type: 'SET_SELECTED_WALLPAPER', payload: wallpaper })
     navigate(`/wallpaper/${wallpaper.id}`)
   }, [dispatch, navigate])
+
+  // 배경화면 수정 처리 (관리자 전용)
+  const handleWallpaperEdit = useCallback((wallpaper: Wallpaper) => {
+    setEditingWallpaper(wallpaper)
+  }, [])
+
+  // 수정 모달 닫기
+  const handleEditClose = useCallback(() => {
+    setEditingWallpaper(null)
+  }, [])
+
+  // 수정 완료 처리
+  const handleEditSuccess = useCallback(async () => {
+    setEditingWallpaper(null)
+    // 좋아요 목록 새로고침
+    try {
+      const likedWallpapersData = await userApi.getLikes(state.userId)
+      setLikedWallpapers(likedWallpapersData)
+      
+      // 현재 검색/정렬 상태에 맞게 필터링
+      let updatedWallpapers = likedWallpapersData
+      if (searchQuery.trim()) {
+        updatedWallpapers = likedWallpapersData.filter(wallpaper => {
+          const searchTerm = searchQuery.toLowerCase()
+          return (
+            wallpaper.title.toLowerCase().includes(searchTerm) ||
+            wallpaper.tags.some(tag => tag.toLowerCase().includes(searchTerm)) ||
+            (wallpaper.description && wallpaper.description.toLowerCase().includes(searchTerm))
+          )
+        })
+      }
+      
+      const sorted = sortWallpapers(updatedWallpapers, sortBy)
+      setFilteredWallpapers(sorted)
+    } catch (error) {
+      console.error('좋아요 목록 새로고침 실패:', error)
+      setError('목록 새로고침 중 오류가 발생했습니다.')
+    }
+  }, [state.userId, searchQuery, sortBy, sortWallpapers])
 
 
 
@@ -314,6 +355,7 @@ export function FavoritesPage() {
               wallpapers={filteredWallpapers}
               loading={false}
               onWallpaperClick={handleWallpaperClick}
+              onWallpaperEdit={handleWallpaperEdit}
               layout="grid"
               paginationMode="infinite"
             />
@@ -330,6 +372,15 @@ export function FavoritesPage() {
             ✕
           </button>
         </div>
+      )}
+
+      {/* 배경화면 수정 모달 */}
+      {editingWallpaper && (
+        <WallpaperEdit
+          wallpaper={editingWallpaper}
+          onClose={handleEditClose}
+          onSuccess={handleEditSuccess}
+        />
       )}
     </div>
   )

@@ -2,6 +2,10 @@
  * 백엔드 애플리케이션 진입점
  */
 
+// 환경변수 로드 (가장 먼저 실행되어야 함)
+import dotenv from 'dotenv';
+dotenv.config();
+
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';

@@ -34,7 +34,7 @@
     "name": "추상",
     "description": "창의적이고 예술적인 추상 이미지",
     "iconUrl": "/uploads/icons/abstract-icon.svg",
-    "wallpaperCount": 10,
+    "wallpaperCount": 11,
     "isActive": true,
     "sortOrder": 4,
     "createdAt": "2024-01-01T00:00:00.000Z"
@@ -44,7 +44,7 @@
     "name": "미니멀",
     "description": "깔끔하고 단순한 미니멀 디자인",
     "iconUrl": "/uploads/icons/minimal-icon.svg",
-    "wallpaperCount": 11,
+    "wallpaperCount": 12,
     "isActive": true,
     "sortOrder": 5,
     "createdAt": "2024-01-01T00:00:00.000Z"

@@ -3,13 +3,14 @@
  */
 
 import { useState, useEffect, useCallback } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useParams, Link, useNavigate } from 'react-router-dom'
 import { useAppContext } from '../context'
 import { 
   WallpaperGrid,
   LoadingSpinner,
   NetworkError
 } from '../components/ui'
+import { WallpaperEdit } from '../components/admin'
 import { SEOHead } from '../components/seo'
 import { ResponsiveBannerAd, SquareAd } from '../components/ads'
 import { useErrorHandler, useScreenSize } from '../hooks'
@@ -19,10 +20,12 @@ import './ThemePage.css'
 
 export function ThemePage() {
   const { themeId } = useParams<{ themeId: string }>()
+  const navigate = useNavigate()
   const { state, dispatch } = useAppContext()
   const [wallpapers, setWallpapers] = useState<Wallpaper[]>([])
   const [theme, setTheme] = useState<Theme | null>(null)
   const [loading, setLoading] = useState(true)
+  const [editingWallpaper, setEditingWallpaper] = useState<Wallpaper | null>(null)
   const { error, isRetrying, handleError, clearError, retry } = useErrorHandler()
   const screenSize = useScreenSize()
 
@@ -67,8 +70,11 @@ export function ThemePage() {
 
   // 배경화면 클릭 처리
   const handleWallpaperClick = useCallback((wallpaper: Wallpaper) => {
+    // 전역 상태 업데이트
     dispatch({ type: 'SET_SELECTED_WALLPAPER', payload: wallpaper })
-  }, [dispatch])
+    // 상세 페이지로 이동
+    navigate(`/wallpaper/${wallpaper.id}`)
+  }, [dispatch, navigate])
 
   // 배경화면 삭제 처리 (관리자 전용)
   const handleWallpaperDelete = useCallback(async () => {
@@ -87,6 +93,23 @@ export function ThemePage() {
       handleError(error)
     }
   }, [themeId, handleError])
+
+  // 배경화면 수정 처리 (관리자 전용)
+  const handleWallpaperEdit = useCallback((wallpaper: Wallpaper) => {
+    setEditingWallpaper(wallpaper)
+  }, [])
+
+  // 수정 모달 닫기
+  const handleEditClose = useCallback(() => {
+    setEditingWallpaper(null)
+  }, [])
+
+  // 수정 완료 처리
+  const handleEditSuccess = useCallback(async () => {
+    setEditingWallpaper(null)
+    // 배경화면 목록 새로고침
+    await handleWallpaperDelete()
+  }, [handleWallpaperDelete])
 
   // 오류 재시도
   const handleRetry = async () => {
@@ -201,6 +224,7 @@ export function ThemePage() {
               loading={loading}
               onWallpaperClick={handleWallpaperClick}
               onWallpaperDelete={handleWallpaperDelete}
+              onWallpaperEdit={handleWallpaperEdit}
               layout="grid"
               paginationMode="infinite"
               mobileAdInterval={8} // 8개마다 광고 삽입
@@ -236,6 +260,15 @@ export function ThemePage() {
             ✕
           </button>
         </div>
+      )}
+
+      {/* 배경화면 수정 모달 */}
+      {editingWallpaper && (
+        <WallpaperEdit
+          wallpaper={editingWallpaper}
+          onClose={handleEditClose}
+          onSuccess={handleEditSuccess}
+        />
       )}
     </div>
   )
