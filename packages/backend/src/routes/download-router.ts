@@ -1,28 +1,32 @@
 /**
  * 다운로드 라우터
- * 배경화면 다운로드 관련 API 엔드포인트를 제공합니다.
+ * 보안이 강화된 배경화면 다운로드 API를 제공합니다.
  */
 
 import { Router, Request, Response } from 'express';
 import { WallpaperService } from '../services/wallpaper-service';
 import { ApiResponse } from '@wallix/shared';
+import { downloadLimiter } from '../middleware/security';
+import { sanitizeFilePath, validateFileName } from '../utils/file-security';
+import { sanitizeString, validateAndSanitizeSearchQuery } from '../utils/input-validation';
 import path from 'path';
 import fs from 'fs';
 
 const router = Router();
 const wallpaperService = new WallpaperService();
 
+// 다운로드 라우터에 레이트 리미팅 적용
+router.use(downloadLimiter);
+
 /**
  * GET /api/download/:id/:resolution - 특정 해상도 이미지 다운로드
- * 요구사항 2.2: 사용자가 특정 해상도를 선택하면 해당 해상도의 이미지 다운로드를 시작한다
- * 요구사항 2.3: 다운로드가 진행될 때 다운로드 진행 상태를 사용자에게 표시한다
- * 요구사항 2.4: 다운로드가 완료되면 사용자의 기본 다운로드 폴더에 파일을 저장한다
  */
 router.get('/:id/:resolution', async (req: Request, res: Response) => {
   try {
     const { id, resolution } = req.params;
     
-    if (!id) {
+    // 입력 검증 및 sanitization
+    if (!id || typeof id !== 'string') {
       const response: ApiResponse = {
         success: false,
         message: '배경화면 ID가 필요합니다',
@@ -31,7 +35,7 @@ router.get('/:id/:resolution', async (req: Request, res: Response) => {
       return res.status(400).json(response);
     }
     
-    if (!resolution) {
+    if (!resolution || typeof resolution !== 'string') {
       const response: ApiResponse = {
         success: false,
         message: '해상도 정보가 필요합니다',
@@ -40,8 +44,12 @@ router.get('/:id/:resolution', async (req: Request, res: Response) => {
       return res.status(400).json(response);
     }
     
-    // 해상도 파싱 (예: "1920x1080")
-    const resolutionMatch = resolution.match(/^(\d+)x(\d+)$/);
+    // ID와 해상도 sanitization
+    const sanitizedId = sanitizeString(id);
+    const sanitizedResolution = sanitizeString(resolution);
+    
+    // 해상도 파싱 및 검증 (예: "1920x1080")
+    const resolutionMatch = sanitizedResolution.match(/^(\d{1,5})x(\d{1,5})$/);
     if (!resolutionMatch) {
       const response: ApiResponse = {
         success: false,
@@ -54,8 +62,18 @@ router.get('/:id/:resolution', async (req: Request, res: Response) => {
     const targetWidth = parseInt(resolutionMatch[1], 10);
     const targetHeight = parseInt(resolutionMatch[2], 10);
     
+    // 해상도 범위 검증
+    if (targetWidth < 100 || targetWidth > 10000 || targetHeight < 100 || targetHeight > 10000) {
+      const response: ApiResponse = {
+        success: false,
+        message: '지원하지 않는 해상도입니다',
+        errorCode: 'UNSUPPORTED_RESOLUTION'
+      };
+      return res.status(400).json(response);
+    }
+    
     // 배경화면 조회
-    const wallpaper = await wallpaperService.getWallpaperById(id);
+    const wallpaper = await wallpaperService.getWallpaperById(sanitizedId);
     if (!wallpaper) {
       const response: ApiResponse = {
         success: false,
@@ -81,14 +99,38 @@ router.get('/:id/:resolution', async (req: Request, res: Response) => {
       return res.status(404).json(response);
     }
     
-    // 파일 경로 구성 (실제 구현에서는 파일 시스템 구조에 맞게 조정)
-    const fileName = `${wallpaper.title.replace(/[^a-zA-Z0-9가-힣]/g, '_')}_${bestResolution.width}x${bestResolution.height}.jpg`;
-    const filePath = path.join(__dirname, '../../uploads', fileName);
+    // 안전한 파일명 생성
+    const safeTitle = wallpaper.title.replace(/[^a-zA-Z0-9가-힣\s]/g, '_').trim();
+    const fileName = `${safeTitle}_${bestResolution.width}x${bestResolution.height}.jpg`;
+    
+    // 파일명 검증
+    if (!validateFileName(fileName)) {
+      const response: ApiResponse = {
+        success: false,
+        message: '유효하지 않은 파일명입니다',
+        errorCode: 'INVALID_FILENAME'
+      };
+      return res.status(400).json(response);
+    }
+    
+    // 안전한 파일 경로 생성
+    const uploadsDir = path.resolve(__dirname, '../../uploads');
+    let filePath: string;
+    
+    try {
+      filePath = sanitizeFilePath(fileName, uploadsDir);
+    } catch (error) {
+      console.error('파일 경로 보안 오류:', error);
+      const response: ApiResponse = {
+        success: false,
+        message: '잘못된 파일 경로입니다',
+        errorCode: 'INVALID_FILE_PATH'
+      };
+      return res.status(400).json(response);
+    }
     
     // 파일 존재 여부 확인
     if (!fs.existsSync(filePath)) {
-      // 실제 구현에서는 bestResolution.fileUrl에서 파일을 가져오거나
-      // 미리 준비된 샘플 이미지를 사용
       const response: ApiResponse = {
         success: false,
         message: '요청한 해상도의 파일을 찾을 수 없습니다',
@@ -97,23 +139,36 @@ router.get('/:id/:resolution', async (req: Request, res: Response) => {
       return res.status(404).json(response);
     }
     
-    // 다운로드 수 증가
-    await wallpaperService.incrementDownloadCount(id);
+    // 다운로드 수 증가 (동시성 제어 필요시 추후 개선)
+    await wallpaperService.incrementDownloadCount(sanitizedId);
     
     // 파일 정보 조회
     const stats = fs.statSync(filePath);
     const fileSize = stats.size;
     
-    // 다운로드 헤더 설정
+    // 파일 크기 검증 (너무 큰 파일 방지)
+    const maxDownloadSize = 50 * 1024 * 1024; // 50MB
+    if (fileSize > maxDownloadSize) {
+      const response: ApiResponse = {
+        success: false,
+        message: '파일 크기가 너무 큽니다',
+        errorCode: 'FILE_TOO_LARGE'
+      };
+      return res.status(413).json(response);
+    }
+    
+    // 보안 다운로드 헤더 설정
     res.setHeader('Content-Type', 'image/jpeg');
     res.setHeader('Content-Length', fileSize);
-    res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
+    res.setHeader('Content-Disposition', `attachment; filename="${encodeURIComponent(fileName)}"`);
     res.setHeader('Cache-Control', 'public, max-age=31536000'); // 1년 캐시
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('X-Frame-Options', 'DENY');
     
-    // 진행 상태 추적을 위한 헤더 (클라이언트에서 활용 가능)
+    // 진행 상태 추적을 위한 헤더
     res.setHeader('X-File-Size', fileSize.toString());
     res.setHeader('X-Resolution', `${bestResolution.width}x${bestResolution.height}`);
-    res.setHeader('X-Wallpaper-Title', wallpaper.title);
+    res.setHeader('X-Wallpaper-Title', encodeURIComponent(wallpaper.title));
     
     // 파일 스트림으로 전송
     const fileStream = fs.createReadStream(filePath);
